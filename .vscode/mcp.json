@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "pdf-reader": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "${workspaceFolder}",
+        "run",
+        "python",
+        "-c",
+        "from pdf_reader_mcp import main; main()"
+      ]
+    }
+  }
+}

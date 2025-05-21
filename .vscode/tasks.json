@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run PDF Reader MCP Server",
+      "type": "shell",
+      "command": "source .venv/bin/activate && python -m pdf_reader_mcp",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Install Development Dependencies",
+      "type": "shell",
+      "command": "source .venv/bin/activate && uv pip install -e .",
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
