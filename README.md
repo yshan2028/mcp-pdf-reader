@@ -1,6 +1,9 @@
 <!-- filepath: ./README.md -->
 # PDF Reader MCP Server for VS Code
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.13%2B-blue)](https://www.python.org/downloads/)
+
 An MCP server that enables VS Code to view and analyze PDF documents using the Model Context Protocol (MCP).
 
 This project was created using the [Model Context Protocol Python SDK](https://github.com/modelcontextprotocol/python-sdk) based on FastMCP.
@@ -29,6 +32,63 @@ source .venv/bin/activate
 
 ```bash
 uv pip install -e .
+```
+
+## Docker
+
+You can also run this MCP server using Docker:
+
+### Build the Docker Image
+
+```bash
+docker build -t pdf-reader-mcp .
+```
+
+### Run the Container
+
+```bash
+docker run --name pdf-reader-mcp -it pdf-reader-mcp
+```
+
+### Use with VS Code or Claude Desktop
+
+When using Docker, update your MCP configuration to use the Docker container:
+
+#### VS Code Configuration (Docker)
+
+```json
+{
+  "servers": {
+    "pdf-reader": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm", 
+        "-i",
+        "pdf-reader-mcp"
+      ]
+    }
+  }
+}
+```
+
+#### Claude Desktop Configuration (Docker)
+
+```json
+{
+  "mcpServers": {
+    "pdf-reader-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm", 
+        "-i",
+        "pdf-reader-mcp"
+      ]
+    }
+  }
+}
 ```
 
 ## Usage
@@ -253,3 +313,18 @@ npx @modelcontextprotocol/inspector uv --directory "${workspaceFolder}" run pdf-
 ```
 
 Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
+
+## Contributing
+
+1. Fork the repo
+2. Create a new branch (`feature-branch`)
+3. Commit your changes
+4. Push to your branch and submit a PR!
+
+## License
+
+This project is licensed under the **MIT License**.
+
+## Contact
+
+For questions or support, reach out via [GitHub Issues](https://github.com/pietermyb/mcp-pdf-reader/issues).
