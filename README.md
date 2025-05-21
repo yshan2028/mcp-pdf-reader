@@ -3,6 +3,8 @@
 
 An MCP server that enables VS Code to view and analyze PDF documents using the Model Context Protocol (MCP).
 
+This project was created using the [Model Context Protocol Python SDK](https://github.com/modelcontextprotocol/python-sdk) based on FastMCP.
+
 ## Features
 
 - Open and read PDF documents
@@ -57,7 +59,7 @@ To make changes to this project:
 
 - Python 3.13+
 - PyPDF2 3.0.0+
-- MCP SDK 1.9.0+
+- MCP SDK 1.9.0+ (from [github.com/modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk))
 - VS Code with MCP extension
 
 ## Tools and Prompts
