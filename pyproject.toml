@@ -1,0 +1,17 @@
+[project]
+name = "pdf-reader-mcp"
+version = "0.1.0"
+description = "PDF Reader MCP Server for VS Code"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [ "mcp>=1.9.0", "PyPDF2>=3.0.0",]
+[[project.authors]]
+name = "pieterm_backbase"
+email = "pieterm@backbase.com"
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project.scripts]
+pdf-reader-mcp = "pdf_reader_mcp:main"
