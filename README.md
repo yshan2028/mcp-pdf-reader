@@ -35,6 +35,20 @@ uv pip install -e .
 
 This MCP server integrates with VS Code's MCP client to provide PDF reading capabilities. See the Tools and Prompts section below for details on available functionality.
 
+## Examples
+
+### MCP Tools in VS Code Copilot
+
+This image shows the PDF Reader tools available in VS Code through the MCP protocol:
+
+![PDF Reader MCP Tools in VS Code Copilot](./images/CoPilot_MCP_Tools.png)
+
+### Example Usage
+
+Here's an example of using the PDF Reader to analyze a document:
+
+![Example of PDF Reader usage](./images/Example_Usage.png)
+
 ## VS Code Configuration
 
 The server is configured to run in VS Code through the `.vscode/mcp.json` file. VS Code must have the MCP extension installed to use this server.

@@ -44,13 +44,13 @@ async def handle_read_resource(uri: AnyUrl) -> str:
     if uri.scheme != "pdf":
         raise ValueError(f"Unsupported URI scheme: {uri.scheme}")
 
-    pdf_id = uri.netloc
+    pdf_id = uri.host
     if pdf_id in pdf_paths:
         # Read the PDF file and return it as base64 encoded
         with open(pdf_paths[pdf_id], "rb") as file:
             pdf_content = file.read()
             return base64.b64encode(pdf_content).decode("utf-8")
-    
+
     raise ValueError(f"PDF not found: {pdf_id}")
 
 @server.list_prompts()
@@ -139,7 +139,7 @@ async def handle_get_prompt(
     pdf_id = arguments["pdf_id"]
     if pdf_id not in pdfs:
         raise ValueError(f"PDF not found: {pdf_id}")
-    
+
     pdf_reader = pdfs[pdf_id]
     pdf_path = pdf_paths[pdf_id]
     pdf_name = Path(pdf_path).name
@@ -147,17 +147,17 @@ async def handle_get_prompt(
     if name == "summarize-pdf":
         style = arguments.get("style", "brief")
         detail_prompt = " Give extensive details." if style == "detailed" else ""
-        
+
         # Extract text from all pages for summarization
         text_content = ""
         total_pages = len(pdf_reader.pages)
-        
+
         # Get PDF metadata for better context
         metadata = pdf_reader.metadata
         metadata_text = ""
         if metadata:
             metadata_text = "\nDocument Metadata:\n" + "\n".join([f"- {k}: {v}" for k, v in metadata.items()])
-        
+
         # Create a structured summary of the content with page numbers
         for page_num in range(total_pages):
             page = pdf_reader.pages[page_num]
@@ -166,7 +166,7 @@ async def handle_get_prompt(
                 # Format the text to be easier to read
                 page_text = page_text.replace('\n\n', '\n').strip()
                 text_content += f"\n--- PAGE {page_num + 1}/{total_pages} ---\n{page_text}\n"
-        
+
         # Instructions for the model are included in the user message since system role isn't available
         return types.GetPromptResult(
             description=f"Summarize PDF: {pdf_name}",
@@ -191,26 +191,26 @@ async def handle_get_prompt(
                 )
             ],
         )
-    
+
     elif name == "extract-text-from-pdf":
         # Handle specific page or page range extraction
         if "page" in arguments:
             page_num = int(arguments["page"])
             if page_num < 0 or page_num >= len(pdf_reader.pages):
                 raise ValueError(f"Invalid page number: {page_num}")
-            
+
             page = pdf_reader.pages[page_num]
             page_text = page.extract_text() or f"No text found on page {page_num}"
-            
+
             # Format the text for better readability
             page_text = page_text.replace('\n\n', '\n').strip()
-            
+
             # Add metadata about the document for context
             metadata = pdf_reader.metadata
             metadata_text = ""
             if metadata:
                 metadata_text = "\nDocument Metadata:\n" + "\n".join([f"- {k}: {v}" for k, v in metadata.items() if v])
-            
+
             return types.GetPromptResult(
                 description=f"Text from page {page_num + 1} of {pdf_name}",
                 messages=[
@@ -233,10 +233,10 @@ async def handle_get_prompt(
             # Handle page range
             start_page = int(arguments.get("start_page", "0"))
             end_page = int(arguments.get("end_page", str(len(pdf_reader.pages) - 1)))
-            
+
             if start_page < 0 or end_page >= len(pdf_reader.pages) or start_page > end_page:
                 raise ValueError(f"Invalid page range: {start_page}-{end_page}")
-            
+
             text_content = ""
             for page_num in range(start_page, end_page + 1):
                 page = pdf_reader.pages[page_num]
@@ -245,13 +245,13 @@ async def handle_get_prompt(
                     # Format the text for better readability
                     page_text = page_text.replace('\n\n', '\n').strip()
                     text_content += f"\n--- PAGE {page_num + 1}/{len(pdf_reader.pages)} ---\n{page_text}\n"
-            
+
             # Add metadata about the document for context
             metadata = pdf_reader.metadata
             metadata_text = ""
             if metadata:
                 metadata_text = "\nDocument Metadata:\n" + "\n".join([f"- {k}: {v}" for k, v in metadata.items() if v])
-            
+
             return types.GetPromptResult(
                 description=f"Text from pages {start_page + 1}-{end_page + 1} of {pdf_name}",
                 messages=[
@@ -270,19 +270,19 @@ async def handle_get_prompt(
                     )
                 ],
             )
-    
+
     elif name == "analyze-pdf":
         question = arguments.get("question", "")
         if not question:
             raise ValueError("Missing question for PDF analysis")
-        
+
         # Extract text based on specified page range or use all pages
         page_range = arguments.get("page_range", "")
         total_pages = len(pdf_reader.pages)
-        
+
         start_page = 0
         end_page = total_pages - 1
-        
+
         # Parse page range if specified
         if page_range:
             try:
@@ -296,7 +296,7 @@ async def handle_get_prompt(
                     start_page = end_page = min(total_pages - 1, max(0, page_num))
             except ValueError:
                 raise ValueError(f"Invalid page range format: {page_range}")
-        
+
         # Extract text from the specified pages
         text_content = ""
         for page_num in range(start_page, end_page + 1):
@@ -306,16 +306,16 @@ async def handle_get_prompt(
                 # Format the text for better readability
                 page_text = page_text.replace('\n\n', '\n').strip()
                 text_content += f"\n--- PAGE {page_num + 1}/{total_pages} ---\n{page_text}\n"
-        
+
         # Add metadata for context
         metadata = pdf_reader.metadata
         metadata_text = ""
         if metadata:
             metadata_text = "\nDocument Metadata:\n" + "\n".join([f"- {k}: {v}" for k, v in metadata.items() if v])
-        
+
         # Create page range description
         pages_desc = f"pages {start_page + 1}-{end_page + 1}" if start_page != end_page else f"page {start_page + 1}"
-        
+
         return types.GetPromptResult(
             description=f"Analysis of {pdf_name} ({question})",
             messages=[
@@ -337,7 +337,7 @@ async def handle_get_prompt(
                 )
             ],
         )
-    
+
     else:
         raise ValueError(f"Unknown prompt: {name}")
 
@@ -435,25 +435,25 @@ async def handle_call_tool(
         path = arguments.get("path")
         if not path:
             raise ValueError("Missing path")
-        
+
         # Validate that the file exists and is a PDF
         if not os.path.exists(path):
             raise ValueError(f"File not found: {path}")
-        
+
         try:
             # Try to open as PDF
             reader = PyPDF2.PdfReader(path)
-            
+
             # Generate a unique ID
             pdf_id = base64.urlsafe_b64encode(os.path.abspath(path).encode()).decode()[:12]
-            
+
             # Store the reader and path
             pdfs[pdf_id] = reader
             pdf_paths[pdf_id] = path
-            
+
             # Notify clients that resources have changed
             await server.request_context.session.send_resource_list_changed()
-            
+
             return [
                 types.TextContent(
                     type="text",
@@ -462,103 +462,103 @@ async def handle_call_tool(
             ]
         except Exception as e:
             raise ValueError(f"Failed to open PDF: {str(e)}")
-    
+
     elif name == "close-pdf":
         pdf_id = arguments.get("pdf_id")
         if not pdf_id or pdf_id not in pdfs:
             raise ValueError("Invalid PDF ID")
-        
+
         path = pdf_paths[pdf_id]
-        
+
         # Remove from storage
         del pdfs[pdf_id]
         del pdf_paths[pdf_id]
-        
+
         # Notify clients that resources have changed
         await server.request_context.session.send_resource_list_changed()
-        
+
         return [
             types.TextContent(
                 type="text",
                 text=f"Closed PDF '{os.path.basename(path)}'",
             )
         ]
-    
+
     elif name == "list-pdf-metadata":
         pdf_id = arguments.get("pdf_id")
         if not pdf_id or pdf_id not in pdfs:
             raise ValueError("Invalid PDF ID")
-        
+
         reader = pdfs[pdf_id]
         metadata = reader.metadata
-        
+
         if metadata:
             metadata_text = "\n".join([f"{k}: {v}" for k, v in metadata.items()])
         else:
             metadata_text = "No metadata available"
-        
+
         return [
             types.TextContent(
                 type="text",
                 text=f"Metadata for '{os.path.basename(pdf_paths[pdf_id])}':\n\n{metadata_text}",
             )
         ]
-    
+
     elif name == "get-pdf-page-count":
         pdf_id = arguments.get("pdf_id")
         if not pdf_id or pdf_id not in pdfs:
             raise ValueError("Invalid PDF ID")
-        
+
         reader = pdfs[pdf_id]
-        
+
         return [
             types.TextContent(
                 type="text",
                 text=f"'{os.path.basename(pdf_paths[pdf_id])}' has {len(reader.pages)} pages",
             )
         ]
-    
+
     elif name == "get-pdf-page-text":
         pdf_id = arguments.get("pdf_id")
         if not pdf_id or pdf_id not in pdfs:
             raise ValueError("Invalid PDF ID")
-        
+
         page_number = arguments.get("page_number")
         if page_number is None:
             raise ValueError("Missing page number")
-            
+
         reader = pdfs[pdf_id]
-        
+
         # Check if page number is valid
         if page_number < 0 or page_number >= len(reader.pages):
             raise ValueError(f"Invalid page number. PDF has {len(reader.pages)} pages (0-{len(reader.pages)-1})")
-        
+
         # Extract text from the specified page
         page = reader.pages[page_number]
         page_text = page.extract_text()
-        
+
         if not page_text:
             page_text = f"No extractable text found on page {page_number}"
-        
+
         return [
             types.TextContent(
                 type="text",
                 text=f"Text from page {page_number} of '{os.path.basename(pdf_paths[pdf_id])}':\n\n{page_text}",
             )
         ]
-    
+
     elif name == "pdf-to-text":
         pdf_id = arguments.get("pdf_id")
         if not pdf_id or pdf_id not in pdfs:
             raise ValueError("Invalid PDF ID")
-        
+
         reader = pdfs[pdf_id]
         include_page_numbers = arguments.get("include_page_numbers", True)
-        
+
         # Get page range or use all pages
         start_page = arguments.get("start_page", 0)
         end_page = arguments.get("end_page", len(reader.pages) - 1)
-        
+
         # Validate page range
         if start_page < 0 or start_page >= len(reader.pages):
             start_page = 0
@@ -566,35 +566,35 @@ async def handle_call_tool(
             end_page = len(reader.pages) - 1
         if start_page > end_page:
             start_page, end_page = end_page, start_page
-        
+
         # Extract text from all pages
         all_text = []
         total_pages = len(reader.pages)
-        
+
         for page_num in range(start_page, end_page + 1):
             page = reader.pages[page_num]
             page_text = page.extract_text()
-            
+
             if page_text:
                 # Format the text to be easier to read
                 page_text = page_text.replace('\n\n', '\n').strip()
-                
+
                 if include_page_numbers:
                     all_text.append(f"\n--- PAGE {page_num + 1}/{total_pages} ---\n{page_text}")
                 else:
                     all_text.append(page_text)
             elif include_page_numbers:
                 all_text.append(f"\n--- PAGE {page_num + 1}/{total_pages} ---\n[No extractable text on this page]")
-        
+
         # Join all the text
         full_text = "\n".join(all_text)
-        
+
         # Get PDF metadata for context
         metadata = reader.metadata
         metadata_text = ""
         if metadata:
             metadata_text = "\nDocument Metadata:\n" + "\n".join([f"- {k}: {v}" for k, v in metadata.items() if v])
-        
+
         # Create page range description
         if start_page == 0 and end_page == total_pages - 1:
             page_range_desc = f"all pages (1-{total_pages})"
@@ -602,7 +602,7 @@ async def handle_call_tool(
             page_range_desc = f"page {start_page + 1}"
         else:
             page_range_desc = f"pages {start_page + 1}-{end_page + 1}"
-        
+
         return [
             types.TextContent(
                 type="text",
@@ -612,7 +612,7 @@ async def handle_call_tool(
                 ),
             )
         ]
-    
+
     else:
         raise ValueError(f"Unknown tool: {name}")
 
