@@ -1,0 +1,121 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="annotated-types" />
+          <option value="anyio" />
+          <option value="apscheduler" />
+          <option value="asyncmy" />
+          <option value="autoflake" />
+          <option value="bcrypt" />
+          <option value="black" />
+          <option value="cachebox" />
+          <option value="certifi" />
+          <option value="cfgv" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="coverage" />
+          <option value="cryptography" />
+          <option value="datetime" />
+          <option value="decorator" />
+          <option value="distlib" />
+          <option value="dnspython" />
+          <option value="email-validator" />
+          <option value="et-xmlfile" />
+          <option value="fastapi-cli" />
+          <option value="fastapi-cloud-cli" />
+          <option value="fastapi" />
+          <option value="filelock" />
+          <option value="flake8" />
+          <option value="greenlet" />
+          <option value="h11" />
+          <option value="httpcore" />
+          <option value="httptools" />
+          <option value="httpx" />
+          <option value="identify" />
+          <option value="idna" />
+          <option value="iniconfig" />
+          <option value="isort" />
+          <option value="itsdangerous" />
+          <option value="jinja2" />
+          <option value="jsonpath-ng" />
+          <option value="loguru" />
+          <option value="markdown-it-py" />
+          <option value="markupsafe" />
+          <option value="mccabe" />
+          <option value="mdurl" />
+          <option value="mypy" />
+          <option value="mypy-extensions" />
+          <option value="nodeenv" />
+          <option value="openpyxl" />
+          <option value="orjson" />
+          <option value="packaging" />
+          <option value="pandas" />
+          <option value="passlib" />
+          <option value="pathspec" />
+          <option value="platformdirs" />
+          <option value="pluggy" />
+          <option value="ply" />
+          <option value="pre-commit" />
+          <option value="pycodestyle" />
+          <option value="pydantic-core" />
+          <option value="pydantic-extra-types" />
+          <option value="pydantic-settings" />
+          <option value="pydantic-validation-decorator" />
+          <option value="pydantic" />
+          <option value="pyflakes" />
+          <option value="pygments" />
+          <option value="pyjwt" />
+          <option value="pymysql" />
+          <option value="pytest" />
+          <option value="pytest-asyncio" />
+          <option value="pytest-cov" />
+          <option value="python-dateutil" />
+          <option value="python-dotenv" />
+          <option value="python-multipart" />
+          <option value="pytz" />
+          <option value="pyyaml" />
+          <option value="redis" />
+          <option value="requests" />
+          <option value="rich" />
+          <option value="rich-toolkit" />
+          <option value="rignore" />
+          <option value="sentry-sdk" />
+          <option value="setuptools" />
+          <option value="shellingham" />
+          <option value="six" />
+          <option value="sniffio" />
+          <option value="sqlalchemy" />
+          <option value="starlette" />
+          <option value="typer" />
+          <option value="typing-extensions" />
+          <option value="typing-inspection" />
+          <option value="tzdata" />
+          <option value="tzlocal" />
+          <option value="ua-parser" />
+          <option value="ua-parser-builtins" />
+          <option value="ujson" />
+          <option value="urllib3" />
+          <option value="user-agents" />
+          <option value="uvicorn" />
+          <option value="virtualenv" />
+          <option value="waitress" />
+          <option value="watchfiles" />
+          <option value="websockets" />
+          <option value="zope-interface" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N803" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="Stylelint" enabled="true" level="ERROR" enabled_by_default="true" />
+  </profile>
+</component>

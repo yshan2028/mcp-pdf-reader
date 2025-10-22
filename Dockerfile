@@ -2,18 +2,22 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# Install dependencies
+# 安装系统依赖(如果 PDF 处理需要)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件
 COPY pyproject.toml ./
 COPY uv.lock ./
+COPY README.md ./
 COPY src/ ./src/
 
-# Install uv package manager and pdf-reader-mcp
-RUN pip install uv && \
-    uv pip install --no-cache-dir -e . && \
+# 安装 Python 依赖
+RUN pip install --no-cache-dir uv && \
+    uv pip install --system --no-cache-dir -e . && \
     pip uninstall -y uv
 
-# Expose the default port (if needed in the future)
-# EXPOSE 3000
-
-# Set the entrypoint command to run the server
+# 设置入口点
 ENTRYPOINT ["pdf-reader-mcp"]
