@@ -5,8 +5,6 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import base64
 import json
-import csv
-import io
 
 from mcp.server.models import InitializationOptions
 import mcp.types as types
@@ -15,7 +13,7 @@ from pydantic import AnyUrl
 import mcp.server.stdio
 import fitz  # pymupdf
 from PIL import Image
-import pdfplumber
+import io
 
 # Store opened PDF documents
 pdfs: Dict[str, fitz.Document] = {}
@@ -60,33 +58,6 @@ def extract_images_from_page(doc: fitz.Document, page_num: int, pdf_id: str) -> 
             print(f"Warning: Could not extract image {img_index} from page {page_num}: {e}")
     
     return image_paths
-
-def extract_tables_from_page(pdf_path: str, page_num: int) -> List[str]:
-    """Extract tables from a page and convert to CSV format."""
-    csv_contents = []
-    
-    try:
-        with pdfplumber.open(pdf_path) as pdf:
-            if page_num < 0 or page_num >= len(pdf.pages):
-                return []
-            
-            page = pdf.pages[page_num]
-            tables = page.extract_tables()
-            
-            if not tables:
-                return []
-            
-            # Convert each table to CSV format
-            for table_idx, table in enumerate(tables):
-                csv_buffer = io.StringIO()
-                writer = csv.writer(csv_buffer)
-                writer.writerows(table)
-                csv_content = csv_buffer.getvalue()
-                csv_contents.append(csv_content)
-    except Exception as e:
-        print(f"Warning: Could not extract tables from page {page_num}: {e}")
-    
-    return csv_contents
 
 @server.list_resources()
 async def handle_list_resources() -> list[types.Resource]:
@@ -470,20 +441,11 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[types.Text
         # Get images
         images = extract_images_from_page(doc, page_number, pdf_id)
         image_info = f"\n\nImages on page: {len(images)}"
-        
-        # Get tables
-        pdf_path = pdf_paths[pdf_id]
-        tables = extract_tables_from_page(pdf_path, page_number)
-        table_info = ""
-        if tables:
-            table_info = "\n\n--- TABLES ON THIS PAGE ---\n"
-            for table_idx, table_csv in enumerate(tables, 1):
-                table_info += f"\nTable {table_idx} (CSV format):\n```csv\n{table_csv}```\n"
 
         return [
             types.TextContent(
                 type="text",
-                text=f"Text from page {page_number} of '{os.path.basename(pdf_paths[pdf_id])}':\n\n{page_text}{image_info}{table_info}",
+                text=f"Text from page {page_number} of '{os.path.basename(pdf_paths[pdf_id])}':\n\n{page_text}{image_info}",
             )
         ]
 
@@ -577,7 +539,7 @@ async def main():
             write_stream,
             InitializationOptions(
                 server_name="pdf-reader-mcp",
-                server_version="0.1.2",
+                server_version="0.1.1",
                 capabilities=server.get_capabilities(
                     notification_options=NotificationOptions(),
                     experimental_capabilities={},

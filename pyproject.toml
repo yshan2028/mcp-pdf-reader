@@ -1,10 +1,10 @@
 [project]
 name = "pdf-reader-mcp"
-version = "0.1.0"
-description = "PDF Reader MCP Server for VS Code"
+version = "0.1.2"
+description = "PDF Reader MCP Server with text, image, and table extraction"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [ "mcp>=1.9.0", "PyPDF2>=3.0.0",]
+dependencies = [ "mcp>=1.9.0", "pymupdf>=1.24.0", "Pillow>=10.0.0", "pdfplumber>=0.10.0",]
 [[project.authors]]
 name = "pieterm_backbase"
 email = "pieterm@backbase.com"

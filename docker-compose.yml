@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  pdf-reader-mcp:
+    build: .
+    container_name: pdf-reader-mcp-server
+    volumes:
+      # 挂载用户主目录，使容器可以访问本地文件
+      - /Users/liuyue:/Users/liuyue:ro
+    # 对于 MCP 需要 stdin_open 和 tty
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

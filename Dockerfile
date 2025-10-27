@@ -14,10 +14,10 @@ COPY uv.lock ./
 COPY README.md ./
 COPY src/ ./src/
 
-# 安装 Python 依赖
+# 安装 uv 并使用它来安装依赖
 RUN pip install --no-cache-dir uv && \
-    uv pip install --system --no-cache-dir -e . && \
-    pip uninstall -y uv
+    uv sync --no-dev && \
+    uv pip install --system -e .
 
 # 设置入口点
 ENTRYPOINT ["pdf-reader-mcp"]
